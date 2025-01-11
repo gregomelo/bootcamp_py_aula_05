@@ -1,0 +1,243 @@
+"""Criação do arquivo para análise."""
+
+import os
+import random
+import time
+from typing import List
+
+
+def check_args(file_args: List[str]) -> None:
+    """
+    Verifica a validade dos argumentos de entrada.
+
+    Parâmetros
+    ----------
+    file_args : List[str]
+        Lista de argumentos fornecidos pela linha de comando. O segundo argumento
+        deve ser um número inteiro positivo.
+
+    Levanta
+    -------
+    SystemExit
+        Caso a entrada não corresponda ao formato esperado ou seja inválida.
+
+    Notas
+    -----
+    A função imprime informações sobre como usar o comando e encerra a execução
+    do programa caso a validação falhe.
+    """
+    try:
+        if len(file_args) != 2 or int(file_args[1]) <= 0:
+            raise ValueError()
+    except ValueError:
+        print(
+            "Usage:  create_measurements.sh <positive integer number of records to create>"
+        )
+        print("        You can use underscore notation for large number of records.")
+        print("        For example:  1_000_000_000 for one billion")
+        exit()
+
+
+def build_weather_station_name_list() -> List[str]:
+    """
+    Extrai e deduplica os nomes das estações meteorológicas de um arquivo CSV.
+
+    Retorna
+    -------
+    List[str]
+        Uma lista contendo os nomes únicos das estações meteorológicas.
+
+    Notas
+    -----
+    A função pressupõe que o arquivo `./data/weather_stations.csv` esteja presente
+    e formatado corretamente.
+    """
+    station_names: List[str] = []
+    with open("./data/weather_stations.csv", "r", encoding="utf-8") as file:
+        file_contents = file.read()
+    for station in file_contents.splitlines():
+        if "#" in station:
+            next
+        else:
+            station_names.append(station.split(";")[0])
+    return list(set(station_names))
+
+
+def convert_bytes(num: float) -> str:
+    """
+    Convert um tamanho em bytes para um formato legível por humanos.
+
+    Parâmetros
+    ----------
+    num : float
+        O tamanho em bytes.
+
+    Retorna
+    -------
+    str
+        O tamanho formatado como uma string legível por humanos (e.g., KiB, MiB, GiB).
+
+    Notas
+    -----
+    Suporta a conversão até GiB.
+    """
+    for x in ["bytes", "KiB", "MiB", "GiB"]:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0
+    return "Tamanho desconhecido"
+
+
+def format_elapsed_time(seconds: float) -> str:
+    """
+    Formata um tempo em segundos para um formato legível por humanos.
+
+    Parâmetros
+    ----------
+    seconds : float
+        O tempo decorrido em segundos.
+
+    Retorna
+    -------
+    str
+        O tempo formatado como uma string legível por humanos.
+
+    Notas
+    -----
+    Formata o tempo em segundos, minutos e/ou horas, dependendo da duração.
+    """
+    if seconds < 60:
+        return f"{seconds:.3f} segundos"
+    elif seconds < 3600:
+        minutes, seconds = divmod(seconds, 60)
+        return f"{int(minutes)} minutos {int(seconds)} segundos"
+    else:
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if minutes == 0:
+            return f"{int(hours)} horas {int(seconds)} segundos"
+        else:
+            return f"{int(hours)} horas {int(minutes)} minutos {int(seconds)} segundos"
+
+
+def estimate_file_size(
+    weather_station_names: List[str], num_rows_to_create: int
+) -> str:
+    """
+    Estima o tamanho do arquivo de dados a ser criado.
+
+    Parâmetros
+    ----------
+    weather_station_names : List[str]
+        Lista com os nomes das estações meteorológicas.
+    num_rows_to_create : int
+        Número de linhas a serem criadas no arquivo de dados.
+
+    Retorna
+    -------
+    str
+        Uma string com a estimativa do tamanho do arquivo em um formato legível por humanos.
+
+    Notas
+    -----
+    A estimativa é baseada em um cálculo médio do tamanho de cada registro.
+    """
+    max_string: float = float("-inf")
+    min_string: float = float("inf")
+    per_record_size: float = 0
+
+    for station in weather_station_names:
+        if len(station) > max_string:
+            max_string = len(station)
+        if len(station) < min_string:
+            min_string = len(station)
+        per_record_size = ((max_string + min_string * 2) + len(",-123.4")) / 2
+
+    total_file_size: float = num_rows_to_create * per_record_size
+    human_file_size: str = convert_bytes(total_file_size)
+
+    message_return = (
+        f"O tamanho estimado do arquivo é:  "
+        f"{human_file_size}.\nO tamanho final será provavelmente muito menor (metade)."
+    )
+
+    return message_return
+
+
+def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -> None:
+    """
+    Gera e escreve um arquivo de dados de teste com o número solicitado de registros.
+
+    Parâmetros
+    ----------
+    weather_station_names : List[str]
+        Lista com os nomes das estações meteorológicas.
+    num_rows_to_create : int
+        Número de registros a serem criados no arquivo.
+
+    Retorna
+    -------
+    None
+        Não retorna nada, mas cria um arquivo `measurements.txt` com os dados gerados.
+
+    Notas
+    -----
+    O arquivo é criado em lotes para melhorar a eficiência e reduzir o tempo de escrita.
+    """
+    start_time: float = time.time()
+    coldest_temp: float = -99.9
+    hottest_temp: float = 99.9
+    station_names_10k_max: List[str] = random.choices(weather_station_names, k=10_000)
+    batch_size: int = 10_000
+    print("Criando o arquivo... isso vai demorar uns 10 minutos...")
+
+    try:
+        with open("./data/measurements.txt", "w", encoding="utf-8") as file:
+            for _ in range(0, num_rows_to_create // batch_size):
+                batch = random.choices(station_names_10k_max, k=batch_size)
+                prepped_deviated_batch = "\n".join(
+                    [
+                        f"{station};{random.uniform(coldest_temp, hottest_temp):.1f}"
+                        for station in batch
+                    ]
+                )
+                file.write(prepped_deviated_batch + "\n")
+
+    except Exception as e:
+        print("Ocorreu um erro ao criar o arquivo:")
+        print(e)
+        exit()
+
+    end_time: float = time.time()
+    elapsed_time: float = end_time - start_time
+    file_size: int = os.path.getsize("./data/measurements.txt")
+    human_file_size: str = convert_bytes(file_size)
+
+    print("Arquivo escrito com sucesso: data/measurements.txt")
+    print(f"Tamanho final:  {human_file_size}")
+    print(f"Tempo decorrido: {format_elapsed_time(elapsed_time)}")
+
+
+def main() -> None:
+    """
+    Função principal do programa.
+
+    Retorna
+    -------
+    None
+        Não retorna nada, mas executa todas as operações necessárias para criar o arquivo.
+
+    Notas
+    -----
+    Define o número de registros a serem criados e chama as funções responsáveis
+    por estimar o tamanho e criar o arquivo.
+    """
+    num_rows_to_create: int = 1_000_000
+    weather_station_names: List[str] = build_weather_station_name_list()
+    print(estimate_file_size(weather_station_names, num_rows_to_create))
+    build_test_data(weather_station_names, num_rows_to_create)
+    print("Arquivo de teste finalizado.")
+
+
+if __name__ == "__main__":
+    main()
