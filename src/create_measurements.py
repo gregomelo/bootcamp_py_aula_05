@@ -218,26 +218,10 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
     print(f"Tempo decorrido: {format_elapsed_time(elapsed_time)}")
 
 
-def main() -> None:
-    """
-    Função principal do programa.
-
-    Retorna
-    -------
-    None
-        Não retorna nada, mas executa todas as operações necessárias para criar o arquivo.
-
-    Notas
-    -----
-    Define o número de registros a serem criados e chama as funções responsáveis
-    por estimar o tamanho e criar o arquivo.
-    """
-    num_rows_to_create: int = 1_000_000
-    weather_station_names: List[str] = build_weather_station_name_list()
-    print(estimate_file_size(weather_station_names, num_rows_to_create))
-    build_test_data(weather_station_names, num_rows_to_create)
-    print("Arquivo de teste finalizado.")
-
+NUM_ROWS_TO_CREATE: int = 1_000_000
 
 if __name__ == "__main__":
-    main()
+    weather_station_names: List[str] = build_weather_station_name_list()
+    print(estimate_file_size(weather_station_names, NUM_ROWS_TO_CREATE))
+    build_test_data(weather_station_names, NUM_ROWS_TO_CREATE)
+    print("Arquivo de teste finalizado.")
