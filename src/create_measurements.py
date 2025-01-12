@@ -8,8 +8,11 @@ from typing import List
 
 # Parâmetros para Criação do Arquivo Teste
 NUM_ROWS_TO_CREATE: int = 1_000_000
-FILENAME_INPUT: Path = Path("../data/weather_stations.csv")
-FILENAME_OUTPUT: Path = Path("../data/measurements.txt")
+
+BASE_DIR: Path = Path(__file__).parent.resolve()
+
+FILENAME_INPUT: Path = BASE_DIR / "../data/weather_stations.csv"
+FILENAME_OUTPUT: Path = BASE_DIR / "../data/measurements.txt"
 
 
 def check_args(file_args: List[str]) -> None:
