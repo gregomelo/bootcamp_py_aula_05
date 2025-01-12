@@ -7,15 +7,11 @@ from typing import List
 import pandas as pd
 from tqdm import tqdm  # importa o tqdm para barra de progresso
 
-from create_measurements import NUM_ROWS_TO_CREATE
+from create_measurements import FILENAME_OUTPUT, NUM_ROWS_TO_CREATE
 
 CONCURRENCY: int = cpu_count()
 
-total_linhas: int = NUM_ROWS_TO_CREATE  # Total de linhas conhecido
-chunksize: int = int(total_linhas * 0.1)  # Define o tamanho do chunk
-filename: Path = Path(
-    "../data/measurements.txt"  # Certifique-se de que este é o caminho correto para o arquivo
-)
+chunksize: int = int(NUM_ROWS_TO_CREATE * 0.1)  # Define o tamanho do chunk
 
 
 def process_chunk(chunk: pd.DataFrame) -> pd.DataFrame:
@@ -100,22 +96,14 @@ def create_df_with_pandas(
 
 
 if __name__ == "__main__":
-    """
-    Bloco principal que executa o processamento do arquivo.
 
-    - Define o número de linhas e tamanho do chunk.
-    - Processa o arquivo com `create_df_with_pandas`.
-    - Exibe o tempo total de processamento e as primeiras linhas do DataFrame resultante.
-
-    Notes
-    -----
-    Este bloco deve ser executado apenas quando o script é chamado diretamente.
-    """
     import time
 
     print("Iniciando o processamento do arquivo.")
     start_time: float = time.time()
-    df: pd.DataFrame = create_df_with_pandas(filename, total_linhas, chunksize)
+    df: pd.DataFrame = create_df_with_pandas(
+        FILENAME_OUTPUT, NUM_ROWS_TO_CREATE, chunksize
+    )
     took: float = time.time() - start_time
 
     print(df.head())
