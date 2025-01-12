@@ -3,7 +3,13 @@
 import os
 import random
 import time
+from pathlib import Path
 from typing import List
+
+# Parâmetros para Criação do Arquivo Teste
+NUM_ROWS_TO_CREATE: int = 1_000_000
+FILENAME_INPUT: Path = Path("../data/weather_stations.csv")
+FILENAME_OUTPUT: Path = Path("../data/measurements.txt")
 
 
 def check_args(file_args: List[str]) -> None:
@@ -53,14 +59,21 @@ def build_weather_station_name_list() -> List[str]:
     e formatado corretamente.
     """
     station_names: List[str] = []
-    with open("./data/weather_stations.csv", "r", encoding="utf-8") as file:
-        file_contents = file.read()
-    for station in file_contents.splitlines():
-        if "#" in station:
-            next
-        else:
-            station_names.append(station.split(";")[0])
-    return list(set(station_names))
+    try:
+        with open(FILENAME_INPUT, "r", encoding="utf-8") as file:
+            file_contents = file.read()
+        for station in file_contents.splitlines():
+            if "#" in station:
+                next
+            else:
+                station_names.append(station.split(";")[0])
+        return list(set(station_names))
+    except FileNotFoundError:
+        print(  # noqa (evitar conflito do black e do autopep8)
+            "Verifique se o ambiente virtual está ativo. "
+            "Para isso, use o comando 'poetry shell' antes de iniciar a execução do programa."
+        )
+        exit()
 
 
 def convert_bytes(num: float) -> str:
@@ -192,7 +205,7 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
     print("Criando o arquivo... isso vai demorar uns 10 minutos...")
 
     try:
-        with open("./data/measurements.txt", "w", encoding="utf-8") as file:
+        with open(FILENAME_OUTPUT, "w", encoding="utf-8") as file:
             for _ in range(0, num_rows_to_create // batch_size):
                 batch = random.choices(station_names_10k_max, k=batch_size)
                 prepped_deviated_batch = "\n".join(
@@ -202,7 +215,12 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
                     ]
                 )
                 file.write(prepped_deviated_batch + "\n")
-
+    except FileNotFoundError:
+        print(  # noqa (evitar conflito do black e do autopep8)
+            "Verifique se o ambiente virtual está ativo. "
+            "Para isso, use o comando 'poetry shell' antes de iniciar a execução do programa."
+        )
+        exit()
     except Exception as e:
         print("Ocorreu um erro ao criar o arquivo:")
         print(e)
@@ -210,15 +228,13 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
 
     end_time: float = time.time()
     elapsed_time: float = end_time - start_time
-    file_size: int = os.path.getsize("./data/measurements.txt")
+    file_size: int = os.path.getsize(FILENAME_OUTPUT)
     human_file_size: str = convert_bytes(file_size)
 
-    print("Arquivo escrito com sucesso: data/measurements.txt")
+    print(f"Arquivo escrito com sucesso: {FILENAME_OUTPUT}")
     print(f"Tamanho final:  {human_file_size}")
     print(f"Tempo decorrido: {format_elapsed_time(elapsed_time)}")
 
-
-NUM_ROWS_TO_CREATE: int = 1_000_000
 
 if __name__ == "__main__":
     weather_station_names: List[str] = build_weather_station_name_list()
