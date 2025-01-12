@@ -5,13 +5,13 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
-from tqdm import tqdm  # importa o tqdm para barra de progresso
+from tqdm import tqdm
 
 from create_measurements import FILENAME_OUTPUT, NUM_ROWS_TO_CREATE
 
 CONCURRENCY: int = cpu_count()
 
-chunksize: int = int(NUM_ROWS_TO_CREATE * 0.1)  # Define o tamanho do chunk
+CHUNKSIZE: int = int(NUM_ROWS_TO_CREATE * 0.1)
 
 
 def process_chunk(chunk: pd.DataFrame) -> pd.DataFrame:
@@ -36,7 +36,7 @@ def process_chunk(chunk: pd.DataFrame) -> pd.DataFrame:
 
 
 def create_df_with_pandas(
-    filename: Path, total_linhas: int, chunksize: int = chunksize
+    filename: Path, total_linhas: int, chunksize: int = CHUNKSIZE
 ) -> pd.DataFrame:
     """
     Processa o arquivo em chunks, aplicando agregação paralelizada.
@@ -54,7 +54,8 @@ def create_df_with_pandas(
     -------
     pd.DataFrame
         Um DataFrame final com as medições agregadas, contendo as colunas
-        'station', 'min', 'max' e 'mean'.
+        'station', 'min', 'max' e 'mean'. Além disso, as primeiras linhas
+        do DataFrame são impressas.
 
     Notes
     -----
@@ -92,6 +93,8 @@ def create_df_with_pandas(
         .sort_values("station")
     )
 
+    print(final_aggregated_df.head())
+
     return final_aggregated_df
 
 
@@ -102,9 +105,8 @@ if __name__ == "__main__":
     print("Iniciando o processamento do arquivo.")
     start_time: float = time.time()
     df: pd.DataFrame = create_df_with_pandas(
-        FILENAME_OUTPUT, NUM_ROWS_TO_CREATE, chunksize
+        FILENAME_OUTPUT, NUM_ROWS_TO_CREATE, CHUNKSIZE
     )
     took: float = time.time() - start_time
 
-    print(df.head())
     print(f"Processing took: {took:.2f} sec")
