@@ -10,18 +10,18 @@ def check_args(file_args: List[str]) -> None:
     """
     Verifica a validade dos argumentos de entrada.
 
-    Parâmetros
+    Parameters
     ----------
     file_args : List[str]
         Lista de argumentos fornecidos pela linha de comando. O segundo argumento
         deve ser um número inteiro positivo.
 
-    Levanta
+    Raise
     -------
     SystemExit
         Caso a entrada não corresponda ao formato esperado ou seja inválida.
 
-    Notas
+    Notes
     -----
     A função imprime informações sobre como usar o comando e encerra a execução
     do programa caso a validação falhe.
@@ -42,7 +42,7 @@ def build_weather_station_name_list() -> List[str]:
     """
     Extrai e deduplica os nomes das estações meteorológicas de um arquivo CSV.
 
-    Retorna
+    Return
     -------
     List[str]
         Uma lista contendo os nomes únicos das estações meteorológicas.
@@ -67,17 +67,17 @@ def convert_bytes(num: float) -> str:
     """
     Convert um tamanho em bytes para um formato legível por humanos.
 
-    Parâmetros
+    Parameters
     ----------
     num : float
         O tamanho em bytes.
 
-    Retorna
+    Return
     -------
     str
         O tamanho formatado como uma string legível por humanos (e.g., KiB, MiB, GiB).
 
-    Notas
+    Notes
     -----
     Suporta a conversão até GiB.
     """
@@ -92,17 +92,17 @@ def format_elapsed_time(seconds: float) -> str:
     """
     Formata um tempo em segundos para um formato legível por humanos.
 
-    Parâmetros
+    Parameters
     ----------
     seconds : float
         O tempo decorrido em segundos.
 
-    Retorna
+    Return
     -------
     str
         O tempo formatado como uma string legível por humanos.
 
-    Notas
+    Notes
     -----
     Formata o tempo em segundos, minutos e/ou horas, dependendo da duração.
     """
@@ -126,19 +126,19 @@ def estimate_file_size(
     """
     Estima o tamanho do arquivo de dados a ser criado.
 
-    Parâmetros
+    Parameters
     ----------
     weather_station_names : List[str]
         Lista com os nomes das estações meteorológicas.
     num_rows_to_create : int
         Número de linhas a serem criadas no arquivo de dados.
 
-    Retorna
+    Return
     -------
     str
         Uma string com a estimativa do tamanho do arquivo em um formato legível por humanos.
 
-    Notas
+    Notes
     -----
     A estimativa é baseada em um cálculo médio do tamanho de cada registro.
     """
@@ -168,19 +168,19 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
     """
     Gera e escreve um arquivo de dados de teste com o número solicitado de registros.
 
-    Parâmetros
+    Parameters
     ----------
     weather_station_names : List[str]
         Lista com os nomes das estações meteorológicas.
     num_rows_to_create : int
         Número de registros a serem criados no arquivo.
 
-    Retorna
+    Return
     -------
     None
         Não retorna nada, mas cria um arquivo `measurements.txt` com os dados gerados.
 
-    Notas
+    Notes
     -----
     O arquivo é criado em lotes para melhorar a eficiência e reduzir o tempo de escrita.
     """
