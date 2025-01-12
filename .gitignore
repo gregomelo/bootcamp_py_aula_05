@@ -171,4 +171,6 @@ cython_debug/
 .pypirc
 
 # Project Files
+# O arquivo de resultados da solução deve ser enviado manualmente
 data/measurements.txt
+data/solution_results.csv
