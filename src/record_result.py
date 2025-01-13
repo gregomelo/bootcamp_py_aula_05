@@ -4,13 +4,15 @@ import time
 from typing import Callable, Union
 
 from pandas import DataFrame
+from polars import LazyFrame
 
 from create_measurements import BASE_DIR, FILENAME_OUTPUT, NUM_ROWS_TO_CREATE
 from solution_pandas import CHUNKSIZE, create_df_with_pandas
+from solution_polars import create_polars_df_streaming
 
 FILENAME_RESULTS = BASE_DIR / "../data/solution_results.csv"
 
-DataFrameType = Union[DataFrame]
+DataFrameType = Union[DataFrame, LazyFrame]
 
 
 def record_result(
@@ -58,7 +60,7 @@ def record_result(
     df = module_solution(**kwargs)
     took: float = time.time() - start_time
 
-    print(f"Processamento concluído com: {took:.2f}s.")
+    print(f"Processamento concluído com: {took:.4f}s.")
 
     try:
         with open(FILENAME_RESULTS, "a", encoding="utf-8") as file:
@@ -86,5 +88,12 @@ if __name__ == "__main__":
         create_df_with_pandas,
         filename=FILENAME_OUTPUT,
         total_linhas=NUM_ROWS_TO_CREATE,
+        chunksize=CHUNKSIZE,
+    )
+
+    record_result(
+        "polars",
+        create_polars_df_streaming,
+        filename=FILENAME_OUTPUT,
         chunksize=CHUNKSIZE,
     )
