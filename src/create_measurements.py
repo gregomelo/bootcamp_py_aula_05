@@ -206,7 +206,7 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
     hottest_temp: float = 99.9
     station_names_10k_max: List[str] = random.choices(weather_station_names, k=10_000)
     batch_size: int = 10_000
-    print("Criando o arquivo... isso vai demorar uns 10 minutos...")
+    print("Criando o arquivo... isso vai demorar uns minutos...")
 
     try:
         with open(FILENAME_OUTPUT, "w", encoding="utf-8") as file:
