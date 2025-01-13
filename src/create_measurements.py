@@ -74,7 +74,8 @@ def build_weather_station_name_list() -> List[str]:
     except FileNotFoundError:
         print(  # noqa (evitar conflito do black e do autopep8)
             "Verifique se o ambiente virtual está ativo. "
-            "Para isso, use o comando 'poetry shell' antes de iniciar a execução do programa."
+            "Para isso, use o comando 'poetry env activate' "
+            "antes de iniciar a execução do programa."
         )
         exit()
 
@@ -221,7 +222,8 @@ def build_test_data(weather_station_names: List[str], num_rows_to_create: int) -
     except FileNotFoundError:
         print(  # noqa (evitar conflito do black e do autopep8)
             "Verifique se o ambiente virtual está ativo. "
-            "Para isso, use o comando 'poetry shell' antes de iniciar a execução do programa."
+            "Para isso, use o comando 'poetry env activate' "
+            "antes de iniciar a execução do programa."
         )
         exit()
     except Exception as e:
