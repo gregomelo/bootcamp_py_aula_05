@@ -16,7 +16,10 @@ DataFrameType = Union[DataFrame, LazyFrame]
 
 
 def record_result(
-    biblioteca: str, module_solution: Callable[..., DataFrameType], **kwargs
+    biblioteca: str,
+    linhas_processadas: int,
+    module_solution: Callable[..., DataFrameType],
+    **kwargs,
 ) -> DataFrameType:
     """
     Executa uma solução de processamento, mede o tempo de execução e registra os resultados.
@@ -65,7 +68,7 @@ def record_result(
     try:
         with open(FILENAME_RESULTS, "a", encoding="utf-8") as file:
             file.write(
-                f"{biblioteca};{NUM_ROWS_TO_CREATE};{start_time_readable};{took:.2f}\n"
+                f"{biblioteca};{linhas_processadas};{start_time_readable};{took:.2f}\n"
             )
     except FileNotFoundError:
         print(  # noqa (evitar conflito do black e do autopep8)
@@ -85,6 +88,7 @@ if __name__ == "__main__":
 
     record_result(
         "pandas",
+        NUM_ROWS_TO_CREATE,
         create_df_with_pandas,
         filename=FILENAME_OUTPUT,
         total_linhas=NUM_ROWS_TO_CREATE,
@@ -93,6 +97,7 @@ if __name__ == "__main__":
 
     record_result(
         "polars",
+        NUM_ROWS_TO_CREATE,
         create_polars_df_streaming,
         filename=FILENAME_OUTPUT,
         chunksize=CHUNKSIZE,
