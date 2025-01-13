@@ -12,7 +12,7 @@ from record_result import record_result
 from solution_pandas import CHUNKSIZE, create_df_with_pandas
 from solution_polars import create_polars_df_streaming
 
-quantidade_linhas = [100_000 * 10**x for x in range(1, 3)]
+quantidade_linhas = [100_000 * 10**x for x in range(1, 6)]
 
 if __name__ == "__main__":
 
@@ -39,3 +39,5 @@ if __name__ == "__main__":
             filename=FILENAME_OUTPUT,
             chunksize=CHUNKSIZE,
         )
+
+        print(f"Finaliznado testes com {quantidade_linha:,}...\n\n")
