@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List
 
 # Parâmetros para Criação do Arquivo Teste
-NUM_ROWS_TO_CREATE: int = 1_000_000
+NUM_ROWS_TO_CREATE: int = 1_000_000_000
 
 BASE_DIR: Path = Path(__file__).parent.resolve()
 
