@@ -102,3 +102,11 @@ if __name__ == "__main__":
         filename=FILENAME_OUTPUT,
         chunksize=CHUNKSIZE,
     )
+
+    record_result(
+        "datatable",
+        NUM_ROWS_TO_CREATE,
+        create_polars_df_streaming,
+        filename=FILENAME_OUTPUT,
+        chunksize=CHUNKSIZE,
+    )
