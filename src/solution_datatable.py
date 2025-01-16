@@ -104,7 +104,7 @@ def create_df_with_datatable(
 
         rows_to_skip = rows_to_skip + chunksize
 
-    final_aggregated_df = dt.Frame = df_process[
+    final_aggregated_df: dt.Frame = df_process[
         :,
         {
             "min": dt.min(dt.f.min),
