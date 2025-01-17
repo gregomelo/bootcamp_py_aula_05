@@ -126,4 +126,4 @@ Se você quer:
 
 A Jornada de Dados é o seu lugar
 
-[![Imagem](https://suajornadadedados.com.br/wp-content/uploads/2024/05/i7.svg)](https://suajornadadedados.com.br/)
+[![Imagem](JornadaDados.png)](https://suajornadadedados.com.br/)
