@@ -75,33 +75,19 @@ Para executar os scripts deste projeto, você precisará das seguintes bibliotec
 
 * Polars = '^1.19.0'
 
+* datatable = "^1.1.0"
+
 ## Resultados
 
-Os testes foram realizados em uma ambiente virtual Codeshare do GitHub com as seguintes configurações:
+Os testes foram realizados em uma isntalação do Ubuntu 24.04.1 LTS no WSL do Windows 11. O notebook é um Dell Inspiron 15 5510, processador 11th Gen Intel(R) Core(TM) i7-11390H @ 3.40GHz   2.92 GHz e 16GB memória ram.
 
-- Architecture:                       x86_64
-- CPU op-mode(s):                     32-bit, 64-bit
-- Byte Order:                         Little Endian
-- Address sizes:                      48 bits physical, 48 bits virtual
-- CPU(s):                             4
-- On-line CPU(s) list:                0-3
-- Thread(s) per core:                 2
-- Core(s) per socket:                 2
-- Socket(s):                          1
-- NUMA node(s):                       1
-- Vendor ID:                          AuthenticAMD
-- CPU family:                         25
-- Model:                              1
-- Model name:                         AMD EPYC 7763 64-Core Processor
-- Stepping:                           1
-- CPU MHz:                            3245.134
+As implementações utilizaram abordagens de Python com pandas, Polars e datatable. Foram testadas diversas quantidades de linhas, conforme os resultados podem ser vistos no gráfico abaixo.
 
-As implementações utilizaram abordagens de Python com Pandas e Polars. Os resultados de tempo de execução para processar o arquivo de 1 bilhão de linhas são apresentados abaixo:
+![Resultados dos testes](ResultadosTestes.png)
 
-| Implementação | Tempo |
-| --- | --- |
-| Python + Pandas | 349.40 sec |
-| Python + Polars | 90.20 sec |
+Vemos que das opções testadas o Polars é a que apresenta melhor performance. Entre 10M e 100M, as implementações da datatable e da pandas são bem próximas. Importante: para implementar a datatable foi necessária o uso de uma estratégia de processamento em lotes manual, dado que essa biblioteca não possui esse tipo de processamento nativo.
+
+Existem outras tecnologias que poderiam ter sido usadas como duckDB, pyspark, entre outras. Contudo, optei por usar somente essas três como forma de estudo. Utilizarei essas outras tecnologias em outros projetos.
 
 Obrigado por [Koen Vossen](https://github.com/koenvo) pela implementação em Polars.
 
@@ -118,7 +104,7 @@ Se você usar somente o Git, use: `git clone https://github.com/gregomelo/bootca
 5. Ative o ambiente virtual usando o comando `poetry env activate`.<br><br>
 6. Para executar o teste com somente uma quantidade única de linhas, execute o comando `python src/create_measurements.py` para gerar o arquivo de teste.<br><br>
 7. Tenha paciência e vá fazer um café, vai demorar uns 10 minutos para gerar o arquivo.<br><br>
-8. Certifique-se de instalar as versões especificadas das bibliotecas Pandas e Polars.<br><br>
+8. Certifique-se de instalar as versões especificadas das bibliotecas pandas, Polars e datatable.<br><br>
 9. Execute o script `python src/record_result.py`.<br><br>
 10. Para executar os testes com diferentes quantidade de linhas, `python src/run_tests.py` para criar o arquivo para processamento e, em seguida, aplicar as soluções implementadas.<br><br>
 10. Verifique os resultados no arquivo `data/solution_results.csv`. No repositório é possível ver o arquivo com teste com diversas quantidade de linhas.<br><br>
@@ -140,8 +126,4 @@ Se você quer:
 
 A Jornada de Dados é o seu lugar
 
-[![Imagem](https://github.com/lvgalvao/data-engineering-roadmap/raw/main/pics/jornada.png)](https://www.jornadadedados2024.com.br/workshops)
-
-Para entrar na lista de espera clique no botao
-
-[![Imagem](https://raw.githubusercontent.com/lvgalvao/data-engineering-roadmap/main/pics/lista_de_espera.png)](https://forms.gle/hJMtRDP3MPBUGvwS7?orbt_src=orbt-vst-1RWyYmpICDu9gPknLgaD)
+[![Imagem](https://suajornadadedados.com.br/wp-content/uploads/2024/05/i7.svg)](https://suajornadadedados.com.br/)
